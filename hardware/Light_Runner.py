@@ -6,6 +6,9 @@ my_c_lib = ctypes.CDLL("./light_handler.dll")
 
 url = 'http://localhost:8080/insert'
 
+response = requests.get('http://localhost:8080/deleteall')
+print(response)
+
 def helpMe(str):
     # Convert Python string to a bytearray
     buffer = ctypes.create_string_buffer(len(str.encode('utf-8')) + 50)  # Allocate enough space
@@ -38,5 +41,6 @@ while True:
     json_obj = {data[0]:data[1],data[2]:data[3]}
     # json_obj = json.loads("\"" + data + "\"")
     print(json_obj)
+    
     response = requests.post(url, json=json_obj, headers=headers)
     print(response)
