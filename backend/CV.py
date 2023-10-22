@@ -64,8 +64,15 @@ def main():
                         sbc.set_brightness(current_brightness - brightness_increase)
                     if current_brightness > 100 or current_brightness <= 0:
                         sbc.set_brightness(current_brightness)
-                    print(current_brightness)
                 else:
+                    if(distance < 0.085):
+                        brightness_increase = 1
+                    elif(distance < 0.16 and distance >= 0.085):
+                        brightness_increase = 2
+                    elif(distance < 0.25 and distance >= 0.16):
+                        brightness_increase = 3
+                    elif(distance < 0.35 and distance >= 0.25):
+                        brightness_increase = 4
                     cv2.putText(frame, "Increase Light", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, RED, 2)
                     cv2.line(frame, (20, 60), (frame.shape[1] - 20, 60), RED, 5)
                     # Restore original screen brightness
@@ -77,7 +84,6 @@ def main():
                         sbc.set_brightness(current_brightness + brightness_increase)
                     if current_brightness >= 100 or current_brightness < 0:
                         sbc.set_brightness(current_brightness)
-                    print(current_brightness)
 
         # Display the video feed with hand landmarks
         cv2.imshow("Hand Gestures", frame)

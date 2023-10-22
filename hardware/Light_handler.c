@@ -34,7 +34,7 @@ void load_data(data_t *light, char *value_triggered)
 void getAlert(char* data)
 {
     char raw_data[MAX_BUFFER_SIZE] = {0};
-    FILE *serial = fopen("/dev/cu.usbmodem1101", "r");
+    FILE *serial = fopen("COM3", "r");
     if (!serial) {
         fprintf(stderr, "Failed to open serial port.\n");
         return;
