@@ -1,5 +1,12 @@
+import os
+from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 import cv2
 import mediapipe as mp
+
+mongo_client = MongoClient(os.getenv("MONGO_CONNECTION"), server_api=ServerApi('1'))
+db = mongo_client['LLM']
+users_collection = db['Values']
 
 def main():
     # Initialize MediaPipe Hand module
