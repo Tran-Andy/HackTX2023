@@ -3,25 +3,19 @@ import mediapipe as mp
 import screen_brightness_control as sbc
 
 def main():
-    # Initialize MediaPipe Hand module
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands()
-
-    # Initialize MediaPipe Drawing module for visualizing landmarks
     mp_drawing = mp.solutions.drawing_utils
-
-    # Define colors
     GREEN = (0, 255, 0)
     RED = (0, 0, 255)
 
-    # Initialize webcam capture
     cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
         print("Error: Could not open the camera.")
         return
 
-    brightness_increase = 1  # You can adjust this value
+    brightness_increase = 1
 
     while True:
         ret, frame = cap.read()
@@ -34,7 +28,6 @@ def main():
         # Convert the BGR image to RGB
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        # Process the frame with MediaPipe Hands
         results = hands.process(frame_rgb)
 
         if results.multi_hand_landmarks:
@@ -59,26 +52,21 @@ def main():
                     brightness_increase = 4
 
                 # Check if the distance is below a threshold (closed fist)
-                threshold = 0.05  # Adjust this threshold as needed
+                threshold = 0.05
                 if distance < threshold:
-                    cv2.putText(frame, "Closed Fist", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, GREEN, 2)
+                    cv2.putText(frame, "Decrease Light", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, GREEN, 2)
                     cv2.line(frame, (20, 60), (frame.shape[1] - 20, 60), GREEN, 5)
                     brightness_levels = sbc.get_brightness()
-                    # Increase screen brightness
+                    # Decrease screen brightness
                     if brightness_levels:
                         current_brightness = brightness_levels[0]
                     if current_brightness <= 100 and current_brightness > 0:
                         sbc.set_brightness(current_brightness - brightness_increase)
-                    if current_brightness >= 100 or current_brightness <= 0:
+                    if current_brightness > 100 or current_brightness <= 0:
                         sbc.set_brightness(current_brightness)
                     print(current_brightness)
-                    
-
-                        
-                    # if sbc.get_brightness() < 100 and sbc.get_brightness() > 0:
-                        # sbc.set_brightness(brightness_original-brightness_increase)
                 else:
-                    cv2.putText(frame, "Open Palm", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, RED, 2)
+                    cv2.putText(frame, "Increase Light", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, RED, 2)
                     cv2.line(frame, (20, 60), (frame.shape[1] - 20, 60), RED, 5)
                     # Restore original screen brightness
                     brightness_levels = sbc.get_brightness()
@@ -87,7 +75,7 @@ def main():
                         current_brightness = brightness_levels[0]
                     if current_brightness < 100 and current_brightness >= 0:
                         sbc.set_brightness(current_brightness + brightness_increase)
-                    if current_brightness >= 100 or current_brightness <= 0:
+                    if current_brightness >= 100 or current_brightness < 0:
                         sbc.set_brightness(current_brightness)
                     print(current_brightness)
 
