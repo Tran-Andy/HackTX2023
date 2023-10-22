@@ -2,7 +2,7 @@ import ctypes
 import requests
 import json
 
-my_c_lib = ctypes.CDLL("./alert_handling.dll")
+my_c_lib = ctypes.CDLL("./light_handler.dll")
 
 url = 'http://localhost:8080/insert'
 
@@ -34,8 +34,9 @@ while True:
 
     data = helpMe(data)
     data = data.split("'")
-    json_obj = {data[0]:data[1],data[2]:data[3],data[4]:data[5],data[6]:data[7]}
+    print(data)
+    json_obj = {data[0]:data[1],data[2]:data[3]}
     # json_obj = json.loads("\"" + data + "\"")
-    # print(json_obj)
+    print(json_obj)
     response = requests.post(url, json=json_obj, headers=headers)
     print(response)
