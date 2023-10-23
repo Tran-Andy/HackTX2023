@@ -1,6 +1,9 @@
 import cv2
 import mediapipe as mp
 import screen_brightness_control as sbc
+from LLM import getLLM
+from time import sleep
+import threading
 
 def main():
     mp_hands = mp.solutions.hands
@@ -16,7 +19,7 @@ def main():
         return
 
     brightness_increase = 1
-
+    auto_brightness = False
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -31,6 +34,7 @@ def main():
         results = hands.process(frame_rgb)
 
         if results.multi_hand_landmarks:
+            auto_brightness = False
             for hand_landmarks in results.multi_hand_landmarks:
                 # Draw hand landmarks and connections on the frame
                 mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
@@ -84,14 +88,17 @@ def main():
                         sbc.set_brightness(current_brightness + brightness_increase)
                     if current_brightness >= 100 or current_brightness < 0:
                         sbc.set_brightness(current_brightness)
-
+        # elif auto_brightness == False:
+        #     t1 = threading.Thread(target=sbc.set_brightness(getLLM()))
+        #     t1.start()
+        #     auto_brightness = True
+        #     t1.join()
         # Display the video feed with hand landmarks
         cv2.imshow("Hand Gestures", frame)
-
         # Press 'Esc' to exit the program
         if cv2.waitKey(1) & 0xFF == 27:
             break
-
+    
     cap.release()
     cv2.destroyAllWindows()
 

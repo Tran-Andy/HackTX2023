@@ -15,7 +15,8 @@ func GetAll(response http.ResponseWriter,request *http.Request,pool *pgxpool.Poo
 	var datas []Data
 
 	row,err := pool.Query(context.Background(),`SELECT value,time
-												FROM public.light_sensor;`)
+												FROM public.light_sensor
+												LIMIT 50;`)
 	if err != nil {
 		log.Printf("Error with the get query :%v", err)
 		return
